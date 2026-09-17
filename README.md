@@ -2,6 +2,8 @@
 
 An AI-powered reboot of the classic Microsoft Office assistant — a googly-eyed paperclip that floats on top of everything on your Mac, answers questions, **looks at your screen** for context, and can **do a few things for you** (with your approval). Runs on your choice of a **free local model** or a **free hosted model**.
 
+> **New here / just want to use the app?** See **[GETTING_STARTED.md](GETTING_STARTED.md)** — install, add a free API key, and go. The rest of this README is for building/developing it.
+
 ## What it is
 
 - A **transparent, always-on-top desktop overlay** (Electron). Clippy sits in a corner, above your windows and across Spaces / fullscreen apps.
