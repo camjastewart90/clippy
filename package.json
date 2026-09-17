@@ -33,7 +33,8 @@
     "publish": {
       "provider": "github",
       "owner": "camjastewart90",
-      "repo": "clippy"
+      "repo": "clippy",
+      "releaseType": "release"
     }
   },
   "devDependencies": {
