@@ -1,0 +1,701 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: transparent;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+  color: #f4f6fa;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+}
+
+.stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 8px;
+}
+
+/* ---------- Clippy character ---------- */
+.dock {
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+}
+
+.clippy {
+  width: 84px;
+  height: 112px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+.clippy__pupils {
+  transition: transform 0.09s linear;
+}
+
+.clippy__svg {
+  display: block;
+  transform-origin: 50% 100%;
+  animation: sway 5s ease-in-out infinite;
+}
+
+.clippy:hover .clippy__svg {
+  animation-play-state: paused;
+  transform: scale(1.06) rotate(-2deg);
+}
+
+.clippy__eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink 5.2s infinite;
+}
+
+.clippy__brows {
+  transform-box: fill-box;
+  transition: transform 0.2s;
+}
+
+.clippy--thinking .clippy__brows {
+  transform: translateY(-1px);
+}
+
+.clippy--talking .clippy__svg {
+  animation: bob 0.5s ease-in-out infinite;
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+/* ---------- Panel ---------- */
+/* White ruled-paper look: blue horizontal lines + a red margin line. */
+.panel {
+  width: 340px;
+  border-radius: 6px;
+  color: #24303c;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent 32px,
+      rgba(214, 74, 52, 0.5) 32px,
+      rgba(214, 74, 52, 0.5) 34px,
+      transparent 34px
+    ),
+    repeating-linear-gradient(transparent 0 26px, #bcd4f0 26px 27px);
+  border: 1px solid #d3dbe6;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.spiral {
+  display: block;
+  width: 100%;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+}
+
+.panel__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px 8px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.04);
+  -webkit-app-region: drag;
+}
+
+.panel__title {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  color: #24303c;
+}
+
+.panel__actions {
+  display: flex;
+  gap: 2px;
+  -webkit-app-region: no-drag;
+}
+
+.iconbtn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #33475a;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.iconbtn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.iconbtn--on {
+  background: rgba(47, 107, 255, 0.18);
+}
+
+.musicmenu {
+  position: absolute;
+  top: 68px;
+  right: 8px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  border: 1px solid #bcd4f0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.musicmenu__item {
+  text-align: left;
+  padding: 9px 12px;
+  border: none;
+  background: none;
+  color: #24303c;
+  font-size: 12.5px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.musicmenu__item:last-child {
+  border-bottom: none;
+}
+
+.musicmenu__item:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.musicmenu__item--on {
+  font-weight: 700;
+  color: #2f6bff;
+}
+
+.musicmenu__stop {
+  color: #b3341f;
+}
+
+/* ---------- Transcript ---------- */
+.transcript {
+  height: 360px; /* overridden inline by the user-set size */
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* top-left drag-to-resize grip (window anchors bottom-right, so it grows up-left) */
+.resize-grip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  z-index: 5;
+  cursor: nwse-resize;
+  -webkit-app-region: no-drag;
+  background: linear-gradient(
+    135deg,
+    transparent 0 5px,
+    rgba(0, 0, 0, 0.4) 5px 7px,
+    transparent 7px 9px,
+    rgba(0, 0, 0, 0.4) 9px 11px,
+    transparent 11px
+  );
+}
+
+.bubble {
+  max-width: 88%;
+  padding: 8px 11px;
+  border-radius: 13px;
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Clippy's replies — same shape/font as the user's bubbles, lighter colour */
+.bubble--bot {
+  align-self: flex-start;
+  background: #eef1f6;
+  color: #24303c;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom-left-radius: 4px;
+}
+
+.bubble--me {
+  align-self: flex-end;
+  background: #000;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.bubble__shot {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.bubble__doc {
+  font-size: 11px;
+  opacity: 0.85;
+  margin-bottom: 4px;
+}
+
+
+.dots {
+  opacity: 0.6;
+}
+
+/* Approve/dismiss card for a proposed action */
+.actioncard {
+  align-self: flex-start;
+  max-width: 92%;
+  margin-top: 2px;
+  padding: 10px 11px;
+  border-radius: 12px;
+  border: 1px solid rgba(122, 162, 255, 0.5);
+  background: rgba(47, 107, 255, 0.12);
+  font-size: 12.5px;
+}
+
+.actioncard__label {
+  line-height: 1.4;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.actioncard__row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.actioncard__row .primary,
+.actioncard__row .ghost {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* ---------- Composer ---------- */
+.composer {
+  padding: 10px 12px 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.composer__input {
+  width: 100%;
+  resize: none;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  /* white ruled-paper look with blue lines that scroll with the text */
+  background-color: #ffffff;
+  background-image: repeating-linear-gradient(transparent 0 22px, #bcd4f0 22px 23px);
+  background-attachment: local;
+  color: #24303c;
+  font: inherit;
+  font-size: 13px;
+  line-height: 23px;
+  padding: 6px 10px;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.composer__input:focus {
+  outline: none;
+  border-color: #2f6bff;
+}
+
+.composer__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.composer__caps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.selcard {
+  margin-bottom: 8px;
+  padding: 8px 9px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #24303c;
+}
+
+.selcard__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #5a6472;
+}
+
+.selcard__preview {
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 4px 0 8px;
+  max-height: 60px;
+  overflow: hidden;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.selcard__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.selcard__actions .ghost {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.mem-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12.5px;
+  padding: 7px 9px;
+  color: #24303c;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.mem-item span {
+  word-break: break-word;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.mem-empty {
+  font-size: 12px;
+  color: #5a6472;
+  padding: 4px 0;
+}
+
+.composer__shot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #5a6472;
+  margin-bottom: 8px;
+}
+
+.composer__shot img {
+  width: 54px;
+  height: 34px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.composer__shotx {
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.primary,
+.ghost {
+  border: none;
+  border-radius: 9px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary {
+  background: #2f6bff;
+  color: #fff;
+}
+
+.primary:hover {
+  background: #4c81ff;
+}
+
+.ghost {
+  background: #ffffff;
+  color: #2f4b6e;
+  border: 1px solid #bcd4f0;
+}
+
+.ghost:hover {
+  background: #eef4fc;
+  border-color: #9cc0ec;
+}
+
+.ghost:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ---------- Pong ---------- */
+.pong {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pong__score {
+  font-size: 13px;
+  font-weight: 700;
+  color: #24303c;
+  text-align: center;
+}
+
+.pong__canvas {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  display: block;
+  border: 1px solid #bcd4f0;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: crosshair;
+}
+
+.pong__hint {
+  font-size: 11px;
+  color: #5a6472;
+  text-align: center;
+}
+
+.diffrow {
+  display: flex;
+  gap: 6px;
+}
+
+.diffrow .ghost {
+  flex: 1;
+  text-transform: capitalize;
+}
+
+.ghost--on {
+  background: #eef4fc;
+  border-color: #2f6bff;
+  color: #2f6bff;
+  font-weight: 700;
+}
+
+/* ---------- Settings ---------- */
+.settings {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #2c2611;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.status__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8a93a0;
+  flex: none;
+}
+
+.status--ok .status__dot {
+  background: #37d67a;
+}
+
+.status--down .status__dot {
+  background: #ff5a5a;
+}
+
+.status--checking .status__dot {
+  background: #f5c518;
+}
+
+.settings__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #5a6472;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: 6px;
+}
+
+.settings__input {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+  color: #24303c;
+  font: inherit;
+  font-size: 13px;
+  padding: 8px 10px;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.modelpick {
+  display: flex;
+  gap: 6px;
+}
+
+.modelpick .settings__input {
+  flex: 1;
+}
+
+.modelpick__toggle {
+  flex: none;
+  width: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+  color: #33475a;
+  cursor: pointer;
+}
+
+.modellist {
+  max-height: 140px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.modellist__item {
+  text-align: left;
+  padding: 7px 10px;
+  border: none;
+  background: none;
+  color: #24303c;
+  font-size: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.modellist__item:last-child {
+  border-bottom: none;
+}
+
+.modellist__item:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* hotkey recorder */
+.hotkeyrec {
+  text-align: left;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.hotkeyrec--on {
+  border-color: #2f6bff;
+  box-shadow: 0 0 0 2px rgba(47, 107, 255, 0.25);
+}
+
+.settings__warn {
+  font-size: 11.5px;
+  color: #b3341f;
+  line-height: 1.4;
+}
+
+.settings__note {
+  font-size: 11px;
+  color: #5a6472;
+  line-height: 1.45;
+  margin: 6px 0 2px;
+}
+
+.linkbtn {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  color: #6ea0ff;
+  font-size: 11.5px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.settings .primary {
+  align-self: stretch;
+  margin-top: 4px;
+}

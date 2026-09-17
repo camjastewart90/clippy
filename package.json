@@ -1,0 +1,60 @@
+{
+  "name": "ai-clippy",
+  "version": "0.1.0",
+  "description": "An AI-powered, context-aware Clippy desktop overlay, powered by Claude.",
+  "author": "Cam Stewart",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview",
+    "dist": "electron-vite build && electron-builder --mac"
+  },
+  "build": {
+    "appId": "com.cam.aiclippy",
+    "productName": "AI Clippy",
+    "files": [
+      "out/**/*",
+      "resources/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": true
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "camjastewart90",
+      "repo": "clippy"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^34.0.0",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  },
+  "allowScripts": {
+    "electron@34.5.8": true,
+    "esbuild@0.25.12": true
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9",
+    "pdf-parse": "^2.4.5"
+  }
+}
